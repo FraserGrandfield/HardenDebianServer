@@ -11,6 +11,10 @@ def print_tree():
     completedProcess = subprocess.run(["ipconfig"], capture_output=True)
     print(completedProcess.stdout.strip().decode('ascii'))
 
+def update_upgrade():
+    completedProcess = subprocess.run(["sudo", "apt-get", "update"], capture_output=True)
+    print(completedProcess)
+
 if __name__ == "__main__":
     #Parser to get flags.
     parser = argparse.ArgumentParser(description="Harden Debian server.")
@@ -23,3 +27,4 @@ if __name__ == "__main__":
     #print_ls()
     
     #Update and upgrade packeges
+    update_upgrade()
