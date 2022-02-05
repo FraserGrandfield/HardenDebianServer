@@ -48,6 +48,9 @@ def update_upgrade():
     print(bcolors.OKBLUE + "Starting update" + bcolors.ENDC)
     completedProcess = subprocess.run(["sudo", "apt-get", "update"], capture_output=True)
     output_info(completedProcess, "Update complete")
+    print(bcolors.OKBLUE + "Starting upgrade" + bcolors.ENDC)
+    completedProcess = subprocess.run(["sudo", "apt-get", "upgrade"], capture_output=True)
+    output_info(completedProcess, "Upgrade complete")
 
 if __name__ == "__main__":
     #Parser to get flags.
@@ -58,8 +61,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     #TESTS
-    print_ip()
+    #print_ip()
     #print_ls()
     
     #Update and upgrade packeges
-    #update_upgrade()
+    update_upgrade()
