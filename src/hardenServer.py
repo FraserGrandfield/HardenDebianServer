@@ -22,6 +22,7 @@ def output_info(process, output):
     if is_error(process):
         if args.verbose:
             print(process.stderr.strip().decode('utf-8'))
+            print(process.stdout.strip().decode('utf-8'))
         else:
             print(bcolors.WARNING + "An error has occured, use [-v] to see more info" + bcolors.ENDC)
     else:
@@ -62,14 +63,35 @@ def update_upgrade():
 #Install and setup the firewall UFW
 def firewall_setup():
     output_progress("Installing firewall")
-    completedProcess = subprocess.run(["sudo", "apt-get", "install", 'ufw'], capture_output=True)
+    completedProcess = subprocess.run(["sudo", "apt-get", "install", "ufw"], capture_output=True)
     output_info(completedProcess, "Firewall installed")
+    output_progress("Allowing outbound traffic")
+    completedProcess = subprocess.run(["sudo", "ufw", "default", "allow", "outgoing", "comment", "'allow", "all", "outgoing", "traffic'"], capture_output=True)
+    output_info(completedProcess, "Outbound traffic enabled")
+    output_progress("Denying incoming traffic")
+    completedProcess = subprocess.run(["sudo", "ufw", "default", "deny", "incoming", "comment", "'deny", "all", "incoming", "traffic'"], capture_output=True)
+    output_info(completedProcess, "Incoming traffic disabled")
+    if args.portsIn != None:
+        for port in args.portsIn:
+            portStr = str(port)
+            output_progress("Limiting incoming traffic on port " + portStr)
+            completedProcess = subprocess.run(["sudo ufw limit in " + portStr + " comment 'allow" + portStr + "connections in'"], capture_output=True, shell=True)
+            output_info(completedProcess, "Limited traffic on " + portStr + " enabled")
+        for port in args.portsOut:
+            portStr = str(port)
+            output_progress("enabling outbound traffic on port " + portStr)
+            completedProcess = subprocess.run(["sudo ufw allow out " + portStr + " comment 'allow" + portStr + "connections out'"], capture_output=True, shell=True)
+            output_info(completedProcess, "Enabled traffic out on " + portStr)
+        output_progress("Enabling ufw")
+        completedProcess = subprocess.run(["sudo ufw enable"], capture_output=True, shell=True)
+        output_info(completedProcess, "ufw enabled")
 
 if __name__ == "__main__":
     #Parser to get flags.
     parser = argparse.ArgumentParser(description="Harden Debian server.")
     parser.add_argument("-v", "--verbose", help="Print verbose", dest="verbose", action="store_true")
-    parser.add_argument("-q", "--qq", help="Print verbose", dest="yeet", action="store_true")
+    parser.add_argument("-pi", "--portsin", help="Limit incoming on ports", dest="portsIn", nargs="+", type=int, default=[22])
+    parser.add_argument("-po", "--portsout", help="Allowing outbound on ports", dest="portsOut", nargs="+", type=int, default=[88, 443])
     global args
     args = parser.parse_args()
     
