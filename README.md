@@ -6,7 +6,7 @@ A lightweight script to harden debian servers.
 # Prerequisite
 Python 3 is required to run the script.
 # How to run
-Run the script with the following command
-``python3 hardenServer.py``
-To see what flags to use run
+Run the script with the following command \
+``python3 hardenServer.py`` \
+To see what flags to use run \
 ``python3 hardenServer.py -h``
