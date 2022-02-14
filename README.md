@@ -1,5 +1,5 @@
 # HardenDebianServer
-A lightweight script to harden debian servers.
+A lightweight script to harden the security of debian servers.
 # Features
 1. Updates and upgrades packages
 2. Installs ufw and sets up rules for incoming and outbound traffic
